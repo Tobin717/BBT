@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登陆系统</title>
+    <meta charset="utf-8">
+    <style type="text/css">@import"pictures/laucher.css";</style>
+    <script>
+		var xhr=new XMLHttpRequest();
+		var response;
+		xhr.onreadystatechange = callback;
+        function readdata()
+        {
+            var userdata0={'username':" " ,'password':" "};
+            userdata0.username=formname0.username.value;
+            userdata0.password=formname0.password.value;
+            return JSON.stringify(userdata0);
+        }
+		function callback()
+		{   if (xhr.readyState==1) {showloading();}
+			if (xhr.readyState==4)
+				{
+					if (xhr.status==200)
+					{   
+                        closeloading();
+						var response=JSON.parse(xhr.responseText);
+						if (response.errcode==0)
+						{   
+							window.location.href=("firstpage.html?"+formname0.username.value);
+						}else{alert(response.errmsg)}
+					}
+				}
+		}
+		function doRequest()
+		{
+			if (formname0.username.value==""||formname0.password.value=="") 
+                {
+                    alert('账号或密码不得为空！');
+                }
+                else
+			     {
+                    if (xhr!=null)
+			         {
+				        var userdata=readdata();
+				        xhr.open("POST","http://127.0.0.1:9990/rzt/login",true);
+				        xhr.setRequestHeader('Content-type','application/JSON');
+				        xhr.send(userdata);
+			         }        
+                 }
+		}
+		function register()
+		{
+			window.location.href="regist.html";
+		}
+		function showloading(){document.getElementById('show').style.display="block"}
+        function closeloading(){document.getElementById('show').style.display="none"}
+    </script>
+</head>
+<body style="background: url(pictures/timg.jpg) scroll;
+        background-size: cover;">
+    <div id="show"><img class="zhezhao" src="loading.png"></div>
+    <div id="logo"></div>
+    <div class="login">
+        <p id="title">统一身份认证</p>
+        <form action="/demo/demo_form.asp" name="formname0">
+            用户名<br>
+            <input type="text" name="username"placeholder="请输入用户名">
+            <br>
+            密码<br>
+            <input type="password" name="password"placeholder="请输入密码">
+            <br><br>
+            <button type="button" id="button1" onclick="doRequest()">登录</button>
+            <button type="button" onclick="register()">注册</button>
+        </form>
+    </div>
+</body>
+</html>
